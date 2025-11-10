@@ -1,0 +1,40 @@
+@startuml OnePiece_UML
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+
+abstract class Character {
+  - name : String
+  - health : int
+  - attackPower : int
+  + attack() : void
+  + defend() : void
+  + displayStats() : void
+  + {abstract} specialAbility() : void
+}
+
+class Luffy {
+  + specialAbility() : void
+}
+
+class Zoro {
+  + specialAbility() : void
+}
+
+class Nami {
+  + specialAbility() : void
+}
+
+class Game {
+  - characters : ArrayList<Character>
+  + startGame() : void
+  + battle() : void
+  + findTreasure() : void
+}
+
+Character <|-- Luffy
+Character <|-- Zoro
+Character <|-- Nami
+Game o-- Character
+
+@enduml
