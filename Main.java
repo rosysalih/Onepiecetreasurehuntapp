@@ -22,6 +22,9 @@ public class Main {
         // Start the game and display the story
         game.startGame();
         
+        // Run the game loop to show character actions
+        game.runGameLoop();
+        
         // Game loop
         boolean treasureFound = false;
         int turnCount = 0;

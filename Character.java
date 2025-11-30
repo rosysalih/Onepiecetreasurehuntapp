@@ -61,6 +61,12 @@ public abstract class Character {
      */
     public abstract void specialAbility();
 
+    /**
+     * Abstract method for a character's main action in the game.
+     * Must be implemented by all subclasses.
+     */
+    public abstract void performAction();
+
     // Getters and setters
     public String getName() {
         return name;

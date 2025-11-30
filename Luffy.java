@@ -24,6 +24,14 @@ public class Luffy extends Character {
     }
 
     /**
+     * Luffy's main action in the game.
+     */
+    @Override
+    public void performAction() {
+        System.out.println(name + " uses Gum-Gum Pistol!");
+    }
+
+    /**
      * Override attack method to add Luffy's unique combat style.
      */
     @Override

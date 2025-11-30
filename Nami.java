@@ -23,6 +23,14 @@ public class Nami extends Character {
     }
 
     /**
+     * Nami's main action in the game.
+     */
+    @Override
+    public void performAction() {
+        System.out.println(name + " navigates using her weather knowledge!");
+    }
+
+    /**
      * Override attack method to add Nami's unique combat style.
      */
     @Override

@@ -182,4 +182,27 @@ public class Game {
     public ArrayList<Character> getCharacters() {
         return characters;
     }
+
+    /**
+     * Run the game loop by calling performAction() on each character.
+     */
+        Add performAction() method to character system
+    
+    - Added abstract performAction() method in Character.java
+    - Implemented unique actions in Luffy, Zoro, and Nami subclasses
+    - Added runGameLoop() in Game.java to execute all character actions
+    - Updated Main.java to call runGameLoop() on startup
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("🎮 GAME ACTIONS 🎮");
+        System.out.println("=".repeat(50));
+        
+        for (Character character : characters) {
+            if (character.isAlive()) {
+                character.performAction();
+                System.out.println("-".repeat(50));
+            }
+        }
+        
+        System.out.println("=".repeat(50) + "\n");
+    }
 }

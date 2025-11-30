@@ -24,6 +24,14 @@ public class Zoro extends Character {
     }
 
     /**
+     * Zoro's main action in the game.
+     */
+    @Override
+    public void performAction() {
+        System.out.println(name + " performs Three-Sword Style!");
+    }
+
+    /**
      * Override attack method to add Zoro's unique combat style.
      */
     @Override
