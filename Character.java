@@ -31,6 +31,23 @@ public abstract class Character {
         System.out.println(name + " attacks with " + attackPower + " damage!");
         return attackPower;
     }
+Add Enemy class, battle system, and random event game loop
+
+- Created Enemy.java with health, attack, and combat methods
+- Added attack(Enemy) method to Character class for enemy combat
+- Implemented battle(Character, Enemy) in Game.java for turn-based combat
+- Added triggerRandomEvent() with 4 event types: enemy encounters, treasure finds, environmental hazards, and peaceful moments
+- Enhanced runGameLoop() to run 3-5 rounds with performAction() and random events per character
+- Characters are removed when defeated, with round summaries and survivor tracking
+    /**
+     * Attack an enemy, reducing their health by this character's attack power.
+     * 
+     * @param enemy The enemy to attack
+     */
+    public void attack(Enemy enemy) {
+        System.out.println(name + " attacks " + enemy.getName() + "!");
+        enemy.takeDamage(attackPower);
+    }
 
     /**
      * Defend against an incoming attack.

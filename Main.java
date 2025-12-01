@@ -13,9 +13,9 @@ public class Main {
         Game game = new Game();
         
         // Add all crew members
-        game.addCharacter(new Luffy());
-        game.addCharacter(new Zoro());
-        game.addCharacter(new Nami());
+        game.addCharacter(new Blaze());
+        game.addCharacter(new Riven());
+        game.addCharacter(new Lyra());
         
         System.out.println();
         

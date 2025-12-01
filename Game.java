@@ -102,7 +102,7 @@ public class Game {
     /**
      * Attempt to find the treasure.
      * Uses random chance to determine if the treasure is found.
-     * If Nami is in the crew and alive, she has a better chance.
+     * If Lyra is in the crew and alive, she has a better chance.
      * 
      * @return true if treasure is found, false otherwise
      */
@@ -111,24 +111,24 @@ public class Game {
         System.out.println("🗺️  SEARCHING FOR TREASURE... 🗺️");
         System.out.println("=".repeat(50));
 
-        // Check if Nami is alive to use her special detection ability
-        boolean namiIsAlive = false;
-        Nami nami = null;
+        // Check if Lyra is alive to use her special detection ability
+        boolean lyraIsAlive = false;
+        Lyra lyra = null;
         for (Character c : characters) {
-            if (c instanceof Nami && c.isAlive()) {
-                namiIsAlive = true;
-                nami = (Nami) c;
+            if (c instanceof Lyra && c.isAlive()) {
+                lyraIsAlive = true;
+                lyra = (Lyra) c;
                 break;
             }
         }
 
         boolean treasureFound;
-        if (namiIsAlive) {
-            System.out.println("Nami uses her navigation skills to search!");
-            treasureFound = nami.detectTreasure();
+        if (lyraIsAlive) {
+            System.out.println("Lyra uses her navigation skills to search!");
+            treasureFound = lyra.detectTreasure();
         } else {
             System.out.println("The crew searches the island...");
-            treasureFound = random.nextDouble() < 0.5; // 50% chance without Nami
+            treasureFound = random.nextDouble() < 0.5; // 50% chance without Lyra
         }
 
         if (treasureFound) {
@@ -184,25 +184,207 @@ public class Game {
     }
 
     /**
-     * Run the game loop by calling performAction() on each character.
+     * Run the game loop by calling performAction() and triggering random events for each character.
+     * Runs for multiple rounds, removing characters when they die.
      */
-        Add performAction() method to character system
-    
-    - Added abstract performAction() method in Character.java
-    - Implemented unique actions in Luffy, Zoro, and Nami subclasses
-    - Added runGameLoop() in Game.java to execute all character actions
-    - Updated Main.java to call runGameLoop() on startup
+    public void runGameLoop() {
+        int rounds = random.nextInt(3) + 3; // 3-5 rounds
+        
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("GAME LOOP - " + rounds + " ROUNDS");
+        System.out.println("=".repeat(60) + "\n");
+        
+        for (int round = 1; round <= rounds; round++) {
+            System.out.println("\n" + "#".repeat(60));
+            System.out.println("### ROUND " + round + " ###");
+            System.out.println("#".repeat(60) + "\n");
+            
+            // Create a copy to safely remove characters during iteration
+            ArrayList<Character> aliveCharacters = new ArrayList<>();
+            for (Character c : characters) {
+                if (c.isAlive()) {
+                    aliveCharacters.add(c);
+                }
+            }
+            
+            // Check if any characters are still alive
+            if (aliveCharacters.isEmpty()) {
+                System.out.println("All characters have been defeated!");
+                System.out.println("GAME OVER!");
+                break;
+            }
+            
+            // Process each alive character
+            for (Character character : aliveCharacters) {
+                System.out.println("\n" + "-".repeat(60));
+                System.out.println(">>> " + character.getName() + "'s Turn <<<");
+                System.out.println("-".repeat(60));
+                
+                // Step 1: Perform character action
+                character.performAction();
+                System.out.println();
+                
+                // Step 2: Trigger random event
+                triggerRandomEvent(character);
+                
+                // Step 3: Check if character died and remove from list
+                if (!character.isAlive()) {
+                    System.out.println("*** " + character.getName() + " HAS BEEN DEFEATED! ***");
+                    System.out.println("*** " + character.getName() + " is removed from the adventure. ***");
+                    characters.remove(character);
+                }
+                
+                System.out.println("-".repeat(60));
+            }
+            
+            // Display round summary
+            System.out.println("\n" + "=".repeat(60));
+            System.out.println("END OF ROUND " + round);
+            System.out.println("Remaining Characters:");
+            for (Character c : characters) {
+                if (c.isAlive()) {
+                    System.out.println("  - " + c.getName() + " (Health: " + c.getHealth() + ")");
+                }
+            }
+            System.out.println("=".repeat(60));
+        }
+        
+        // Final summary
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("GAME LOOP COMPLETE");
+        System.out.println("=".repeat(60));
+        
+        if (!characters.isEmpty()) {
+            System.out.println("\nSurvivors:");
+            for (Character c : characters) {
+                if (c.isAlive()) {
+                    System.out.println("  - " + c.getName() + " (Health: " + c.getHealth() + ")");
+                }
+            }
+        } else {
+            System.out.println("\nNo survivors. The adventure has ended.");
+        }
+        
+        System.out.println("=".repeat(60) + "\n");
+    }
+
+    /**
+     * Battle between a character and an enemy.
+     * Single round combat where character attacks first, then enemy counterattacks if alive.
+     * 
+     * @param character The character fighting
+     * @param enemy The enemy to fight
+     */
+    public void battle(Character character, Enemy enemy) {
         System.out.println("\n" + "=".repeat(50));
-        System.out.println("🎮 GAME ACTIONS 🎮");
+        System.out.println("BATTLE: " + character.getName() + " vs " + enemy.getName());
         System.out.println("=".repeat(50));
         
-        for (Character character : characters) {
-            if (character.isAlive()) {
-                character.performAction();
-                System.out.println("-".repeat(50));
-            }
+        // Display initial stats
+        System.out.println(character.getName() + " Health: " + character.getHealth());
+        System.out.println(enemy.toString());
+        System.out.println();
+        
+        // Character attacks first
+        character.attack(enemy);
+        
+        // Check if enemy is still alive to counterattack
+        if (enemy.isAlive()) {
+            System.out.println();
+            enemy.attack(character);
+        } else {
+            System.out.println(enemy.getName() + " has been defeated!");
+        }
+        
+        // Display final health
+        System.out.println();
+        System.out.println("--- Battle Results ---");
+        System.out.println(character.getName() + " Health: " + character.getHealth());
+        System.out.println(enemy.getName() + " Health: " + enemy.getHealth());
+        
+        if (!character.isAlive()) {
+            System.out.println(character.getName() + " has been defeated!");
         }
         
         System.out.println("=".repeat(50) + "\n");
+    }
+
+    /**
+     * Trigger a random event for a character.
+     * Events include: enemy encounter, treasure find, environmental hazard, or peaceful moment.
+     * 
+     * @param character The character experiencing the event
+     * @return String description of the event that occurred
+     */
+    public String triggerRandomEvent(Character character) {
+        int eventType = random.nextInt(4); // 0-3 for four event types
+        String eventDescription;
+        
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("RANDOM EVENT!");
+        System.out.println("=".repeat(50));
+        
+        switch (eventType) {
+            case 0:
+                // Enemy encounter
+                String[] enemyNames = {"Bandit", "Wild Beast", "Rival Pirate", "Island Guardian"};
+                String enemyName = enemyNames[random.nextInt(enemyNames.length)];
+                int enemyHealth = random.nextInt(30) + 20; // 20-49 health
+                int enemyAttack = random.nextInt(15) + 10; // 10-24 attack
+                
+                Enemy enemy = new Enemy(enemyName, enemyHealth, enemyAttack);
+                eventDescription = character.getName() + " encountered a " + enemyName + "!";
+                System.out.println(eventDescription);
+                battle(character, enemy);
+                break;
+                
+            case 1:
+                // Find treasure - increase health or attack power
+                if (random.nextBoolean()) {
+                    int healthBoost = random.nextInt(20) + 10; // 10-29 health
+                    character.setHealth(character.getHealth() + healthBoost);
+                    eventDescription = character.getName() + " found a health potion! Gained " + healthBoost + " health.";
+                } else {
+                    int attackBoost = random.nextInt(5) + 3; // 3-7 attack
+                    character.setHealth(character.getHealth()); // Keep current health
+                    eventDescription = character.getName() + " found a power-up! Attack increased by " + attackBoost + "! (Simulated)";
+                }
+                System.out.println(eventDescription);
+                System.out.println(character.getName() + " current health: " + character.getHealth());
+                System.out.println("=".repeat(50) + "\n");
+                break;
+                
+            case 2:
+                // Environmental hazard
+                int damage = random.nextInt(15) + 5; // 5-19 damage
+                String[] hazards = {"spike trap", "falling rocks", "poisonous gas", "collapsing floor"};
+                String hazard = hazards[random.nextInt(hazards.length)];
+                
+                eventDescription = character.getName() + " triggered a " + hazard + "!";
+                System.out.println(eventDescription);
+                character.takeDamage(damage);
+                System.out.println("=".repeat(50) + "\n");
+                break;
+                
+            case 3:
+                // Peaceful moment
+                String[] peacefulEvents = {
+                    "found a safe resting spot",
+                    "enjoyed the scenic view",
+                    "discovered an ancient inscription",
+                    "spotted a friendly island creature"
+                };
+                String peaceful = peacefulEvents[random.nextInt(peacefulEvents.length)];
+                eventDescription = character.getName() + " " + peaceful + ". Nothing happened.";
+                System.out.println(eventDescription);
+                System.out.println("=".repeat(50) + "\n");
+                break;
+                
+            default:
+                eventDescription = "An unknown event occurred.";
+                System.out.println("=".repeat(50) + "\n");
+        }
+        
+        return eventDescription;
     }
 }
